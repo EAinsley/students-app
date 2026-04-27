@@ -11,6 +11,7 @@ import {
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('students')
 export class StudentsController {
@@ -22,9 +23,11 @@ export class StudentsController {
   }
 
   @Get()
-  findAll(@Query() paginationQuery) {
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    console.log(paginationQuery);
+    console.log(typeof paginationQuery.limit);
     // const { limit, offset } = paginationQuery;
-    return this.studentsService.findAll();
+    return this.studentsService.findAll(paginationQuery);
   }
 
   @Get(':id')
