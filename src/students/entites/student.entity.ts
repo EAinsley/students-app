@@ -19,6 +19,8 @@ export class Student {
   promotion: string;
 
   @JoinTable()
-  @ManyToMany(() => Course, (course) => course.students)
+  @ManyToMany(() => Course, (course) => course.students, {
+    cascade: true,
+  })
   courses: Course[];
 }
