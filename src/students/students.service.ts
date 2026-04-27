@@ -3,14 +3,7 @@ import { Student } from './entites/student.entity';
 
 @Injectable()
 export class StudentsService {
-  private students: Student[] = [
-    {
-      id: 1,
-      name: 'John',
-      promotion: 'Spring-2026',
-      courses: ['JS', 'Java'],
-    },
-  ];
+  private students: Student[] = [];
 
   create(createStudentDto: any) {
     this.students.push(createStudentDto);
