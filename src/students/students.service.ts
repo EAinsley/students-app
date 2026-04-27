@@ -4,27 +4,47 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { Course } from './entites/course.entity';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
   ) {}
 
-  create(createStudentDto: CreateStudentDto) {
-    const student = this.studentRepository.create(createStudentDto);
+  async create(createStudentDto: CreateStudentDto) {
+    const courses = await Promise.all(
+      createStudentDto.courses.map(({ name }) =>
+        this.preloadCourseByName(name),
+      ),
+    );
+
+    const student = this.studentRepository.create({
+      ...createStudentDto,
+      courses,
+    });
+
     return this.studentRepository.save(student);
   }
 
   findAll() {
-    return this.studentRepository.find();
+    return this.studentRepository.find({
+      relations: {
+        courses: true,
+      },
+    });
   }
 
   async findOne(id: number) {
     const student = await this.studentRepository.findOne({
       where: {
         id: id,
+      },
+      relations: {
+        courses: true,
       },
     });
     if (!student) {
@@ -47,5 +67,19 @@ export class StudentsService {
   async remove(id: number) {
     const student = await this.findOne(id);
     return this.studentRepository.remove(student);
+  }
+
+  private async preloadCourseByName(name: string): Promise<Course> {
+    const existingCourse = await this.courseRepository.findOne({
+      where: {
+        name, // name: name
+      },
+    });
+
+    if (existingCourse) {
+      return existingCourse;
+    }
+
+    return this.courseRepository.create({ name }); // name: name
   }
 }
