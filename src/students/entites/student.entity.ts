@@ -12,11 +12,14 @@ export class Student {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column()
   promotion: string;
+
+  @Column({ default: 0 })
+  recommendations: number;
 
   @JoinTable()
   @ManyToMany(() => Course, (course) => course.students, {

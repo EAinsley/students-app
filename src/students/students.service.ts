@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './entites/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Course } from './entites/course.entity';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { Event } from '../events/entities/event.entity';
 
 @Injectable()
 export class StudentsService {
@@ -14,6 +15,7 @@ export class StudentsService {
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createStudentDto: CreateStudentDto) {
@@ -29,6 +31,32 @@ export class StudentsService {
     });
 
     return this.studentRepository.save(student);
+  }
+
+  async recommendStudent(student: Student) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      student.recommendations++;
+
+      const recommendedEvent = new Event();
+      recommendedEvent.name = 'recommended_student';
+      recommendedEvent.type = 'student';
+      recommendedEvent.payload = { studentId: student.id };
+
+      await queryRunner.manager.save(student);
+      await queryRunner.manager.save(recommendedEvent);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   findAll(paginationQuery: PaginationQueryDto) {

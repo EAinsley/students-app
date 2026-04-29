@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'postgres',
       autoLoadEntities: true, // models will be loaded automatically
       synchronize: true, // entities will be synced with db (not recommended in production)
+      poolSize: 10,
     }),
     StudentsModule,
   ],
