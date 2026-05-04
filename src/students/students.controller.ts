@@ -7,13 +7,12 @@ import {
   Patch,
   Post,
   Query,
-  SetMetadata,
 } from '@nestjs/common';
-import { StudentsService } from './students.service';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
+import { StudentsService } from './students.service';
 
 @Controller('students')
 export class StudentsController {
@@ -31,9 +30,9 @@ export class StudentsController {
     return this.studentsService.findAll(paginationQuery);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: number) {
-    console.log(typeof id);
     return this.studentsService.findOne(+id);
   }
 
@@ -42,6 +41,7 @@ export class StudentsController {
     return this.studentsService.update(+id, updateStudentDto);
   }
 
+  @Public()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentsService.remove(+id);
