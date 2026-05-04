@@ -23,7 +23,7 @@ import * as Joi from '@hapi/joi';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true, // models will be loaded automatically
-      synchronize: false, // entities will be synced with db (not recommended in production)
+      synchronize: true, // entities will be synced with db (not recommended in production)
       poolSize: 10,
     }),
     StudentsModule,
