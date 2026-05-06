@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { StudentsModule } from './students/students.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { CommonModule } from './common/common.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -23,10 +24,11 @@ import * as Joi from '@hapi/joi';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true, // models will be loaded automatically
-      synchronize: false, // entities will be synced with db (not recommended in production)
+      synchronize: true, // entities will be synced with db (not recommended in production)
       poolSize: 10,
     }),
     StudentsModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,10 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { StudentsService } from './students.service';
+import { Public } from 'src/common/decorators/public.decorator';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
+import { StudentsService } from './students.service';
 
 @Controller('students')
 export class StudentsController {
@@ -22,17 +23,17 @@ export class StudentsController {
     return this.studentsService.create(createStudentDto);
   }
 
+  @Public()
   @Get()
-  findAll(@Query() paginationQuery: PaginationQueryDto) {
-    console.log(paginationQuery);
-    console.log(typeof paginationQuery.limit);
+  async findAll(@Query() paginationQuery: PaginationQueryDto) {
     // const { limit, offset } = paginationQuery;
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.studentsService.findAll(paginationQuery);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: number) {
-    console.log(typeof id);
     return this.studentsService.findOne(+id);
   }
 
@@ -41,6 +42,7 @@ export class StudentsController {
     return this.studentsService.update(+id, updateStudentDto);
   }
 
+  @Public()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentsService.remove(+id);
