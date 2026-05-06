@@ -27,8 +27,6 @@ export class HttpExceptionFilter<
         : (exceptionResponse as object);
 
     console.log(status);
-    console.log(exceptionResponse);
-    console.log(error);
     response.status(status).json({
       ...error,
       timestamp: new Date().toISOString(),

@@ -22,7 +22,7 @@ export class TimeoutInterceptor implements NestInterceptor {
       tap(() => console.log('after TimeoutInterceptor')),
       timeout(3000),
       catchError((err) => {
-        console.log('Error', err);
+        console.log('Error');
         if (err instanceof TimeoutError) {
           return throwError(() => new RequestTimeoutException());
         }
