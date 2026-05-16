@@ -13,6 +13,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
+import { ParseIntPipe } from 'src/common/pipes/parse-int.pipe';
 
 @Controller('students')
 export class StudentsController {
@@ -33,7 +34,7 @@ export class StudentsController {
 
   @Public()
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.findOne(+id);
   }
 
